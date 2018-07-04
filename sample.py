@@ -15,8 +15,7 @@ load_dotenv(dotenv_path)
 
 # Run every 12h (43200 seconds)
 # It's necessary when we don't have a cron
-#every = 43200
-every = 10 #test
+every = 43200
 
 # Define main function
 def main():
