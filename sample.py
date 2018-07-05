@@ -39,7 +39,7 @@ def deputados_rs():
     # Get page
     page = requests.get('http://www.al.rs.gov.br/deputados/ListadeDeputados.aspx')
     # Load page content by lxml
-    soup = BeautifulSoup(page.context, "lxml")
+    soup = BeautifulSoup(page.content, "lxml")
 
     # Get all dep data
     dep_name  = soup.findAll("a", {"class": "hlklstdeputado"})
