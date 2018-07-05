@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 # Coyright Caguete Bot
 import os
+import sys
 import time
 import datetime
 import requests
@@ -15,15 +16,11 @@ dotenv_path = join(dirname(__file__), '.env')
 # Load file from path
 load_dotenv(dotenv_path)
 
-# Run every 12h (43200 seconds)
-# It's necessary when we don't have a cron
-every = 43200
-
 # Define main function
 def main():
 
     # Call what do you want to post
-    deputados_rs()
+    sys.exit() if deputados_rs() == True else False
 
 # Twitter function
 def twitter(post):
@@ -48,14 +45,13 @@ def deputados_rs():
     dep_tel   = soup.findAll("span", {"class": "lbllstdeputadotelefone"})
 
     for num in range(len(dep_name)):
-        # Post 1 dep each 10 seconds
-        time.sleep(10)
-        fonte = "http://www.al.rs.gov.br/deputados/ListadeDeputados.aspx"
-        post = "Deputado: " + dep_name + "\n" + "Partido: " + dep_part + "\n" + "E-mail: " + dep_email + "\n" + "Telefone: " + dep_tel + "\n" + "Fonte: " + fonte
-        twitter(post)
+        fonte = "https://goo.gl/cRQ8RH"
+        post = "RS" + "\n" + "Deputado estadual: " + str(dep_name[num].getText()) + "\n" + "Partido: " + str(dep_part[num].getText()) + "\n" + "E-mail: " + str(dep_email[num].getText()) + "\n" + "Telefone: " + str(dep_tel[num].getText()) + "\n" + "Fonte: " + fonte
+        time.sleep(60) # Post one dep each 60 seconds
+        print(twitter(post))
+    return True
 
 
 if __name__ == '__main__':
     while True:
         main()
-        time.sleep(every)
