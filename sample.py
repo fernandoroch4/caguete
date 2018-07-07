@@ -45,12 +45,25 @@ def deputados_rs():
     dep_tel   = soup.findAll("span", {"class": "lbllstdeputadotelefone"})
 
     for num in range(len(dep_name)):
-        fonte = "https://goo.gl/cRQ8RH"
-        post = "RS" + "\n" + "Deputado estadual: " + str(dep_name[num].getText()) + "\n" + "Partido: " + str(dep_part[num].getText()) + "\n" + "E-mail: " + str(dep_email[num].getText()) + "\n" + "Telefone: " + str(dep_tel[num].getText()) + "\n" + "Fonte: " + fonte
+        page_spent = requests.get(dep_name[num].get('href') + '/Transparência/Gastos.aspx')
+        soup_spent = BeautifulSoup(page_spent.content, "lxml")
+        # Get dep spent
+        dep_spent_description = soup_spent.findAll("td", {"class": "lblDescricaoDespesa"})
+        dep_spent_value = soup_spent.findAll("td", {"class": "lblValorDespesa"})
+        # Get dep monthly allowance
+        dep_quota = soup_spent.findAll("span", {"class": "lblCota"})
+        dep_quota = float(dep_quota[0].getText().replace(' ','').replace('R$','').replace('.','').replace(',','.'))
+        sum_spent = 0
+        for i in range(len(dep_spent_value)):
+            dsv = float(dep_spent_value[i].getText().replace(' ','').replace('R$','').replace('-','').replace('\n-R$','').replace('\n','').replace('.','').replace(',','.'))
+            sum_spent += dsv
+        if dep_quota < sum_spent:
+            print(str(dep_name[num].getText()) + " gastou demais")
+            print("cota: {} total: {} diferença: {}".format(round(dep_quota,2),round(sum_spent,2),round(dep_quota-sum_spent,2)))
+        '''post = "RS" + "\n" + "Deputado estadual: " + str(dep_name[num].getText()) + "\n" + "Partido: " + str(dep_part[num].getText()) + "\n" + "E-mail: " + str(dep_email[num].getText()) + "\n" + "Telefone: " + str(dep_tel[num].getText()) + "\n" + "Fonte: " + fonte
         time.sleep(60) # Post one dep each 60 seconds
-        print(twitter(post))
+        print(twitter(post))'''
     return True
-
 
 if __name__ == '__main__':
     while True:
