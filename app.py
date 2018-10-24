@@ -4,8 +4,6 @@
 #
 import os
 import sys
-import time
-import datetime
 import requests
 from bs4 import BeautifulSoup
 from TwitterAPI import TwitterAPI
